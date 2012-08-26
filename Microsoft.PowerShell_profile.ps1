@@ -11,6 +11,9 @@ $mydir = (Split-Path -parent $MyInvocation.MyCommand.Definition)
 
 $PSModuleAutoLoadingPreference = "ALL"
 
+Push-Location $mydir
+Import-Module .\Modules\posh-git
+
 function prompt {
     $realLASTEXITCODE = $LASTEXITCODE
 
@@ -28,3 +31,5 @@ function prompt {
 #Posh git stuff
 Enable-GitColors
 Start-SshAgent -Quiet
+
+Pop-Location
