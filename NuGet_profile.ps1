@@ -36,3 +36,15 @@ function Search-PackageConfigs
 
     Get-ChildItem -Path . -Recurse -Include packages.config | Select-String $searchText
 }
+
+function Copy-MissingPackages
+{
+    param(
+        $destination,
+        $source="."
+    )
+
+    Get-ChildItem -Path $source -Filter *.nupkg -Recurse | Where-Object {
+        (Test-Path (Join-Path $destination $_.Name)) -eq $false 
+    } | Copy-Item -Destination $destination
+}
