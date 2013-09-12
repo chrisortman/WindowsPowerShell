@@ -46,5 +46,8 @@ function Copy-MissingPackages
 
     Get-ChildItem -Path $source -Filter *.nupkg -Recurse | Where-Object {
         (Test-Path (Join-Path $destination $_.Name)) -eq $false 
-    } | Copy-Item -Destination $destination
+    } | %{
+        Write-Host "Copying package $_"
+        Copy-Item  -Path $_.FullName -Destination $destination 
+    }
 }

@@ -14,6 +14,92 @@ $PSModuleAutoLoadingPreference = "ALL"
 Push-Location $mydir
 Import-Module .\Modules\posh-git
 
+function Get-OSSVersion
+{
+    $currentDirectory = (Get-Location).Path
+    $currentVersion = $currentDirectory.Substring(13)
+    $currentVersion = $currentVersion.Substring(0, $currentVersion.IndexOf('\'))
+
+    $currentVersion
+}
+function Switch-OSSVersion
+{
+	param([string] $Version)
+        
+    $currentVersion = (Get-OSSVersion)
+    $currentPath = (Get-OSSVersionPath -Version $currentVersion)
+    $newPath = (Get-OSSVersionPath -Version $Version)
+
+    Write-Host "Switching from $currentPath to $newPath"
+    Push-Location (Get-Location).Path.ToLower().Replace($currentPath.ToLower(), $newPath.ToLower())
+}
+
+function Get-OSSVersionPath
+{
+    param([string] $Version)
+
+    $path = "c:\istfs\OSS\$($Version)\"
+    if((Test-Path $path) -eq $true)
+    {
+        return $path
+    }
+    else 
+    {
+        $path = "c:\istfs\OSS\Version 0$($Version).00\"
+        if((Test-Path $path) -eq $true) 
+        {
+            return $path
+        }
+        else 
+        {
+            $path = "c:\istfs\OSS\Version $($Version)"
+            if((Test-Path $path) -eq $true)
+            {
+                return $path
+            }
+        }
+
+        throw "Invalid Version $Version"
+    }
+}
+function Start-DbAdmin 
+{
+    param([string] $Version = "Current")
+
+    $path = (Join-Path (Get-OSSVersionPath $Version) "_Bin")
+    Write-Host "Starting DBAdmin in $path"
+    . "$path\IS.DbAdministration.exe"
+   
+}
+
+function Start-OSS
+{
+    param(
+        [string] $Server = "ISSQLDEV",
+        [string] $Environment = "DVLP",
+        [string] $Version = "Current"
+        )
+
+    $path = (Join-Path (Get-OSSVersionPath $Version) "_Bin")
+    Write-Host "Starting Elation in $path connected to $Server - $Environment"
+    . "$path\IS.OSS.Main.exe" -S $Server -E $Environment
+   
+}
+
+function Start-Storefront
+{
+    param(
+        [string] $Server = "ISSQLDEV",
+        [string] $Environment = "DVLP",
+        [string] $Version = "Current"
+        )
+
+    $path = (Join-Path (Get-OSSVersionPath $Version) "_Bin")
+    Write-Host "Starting Elation in $path connected to $Server - $Environment"
+    . "$path\Shell.exe" -S $Server -E $Environment
+   
+}
+
 function prompt {
     $realLASTEXITCODE = $LASTEXITCODE
 
@@ -33,3 +119,8 @@ Enable-GitColors
 Start-SshAgent -Quiet
 
 Pop-Location
+
+Add-PSSnapin WDeploySnapin3.0
+
+Import-Module Pscx
+Invoke-BatchFile "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
