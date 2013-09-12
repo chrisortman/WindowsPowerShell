@@ -14,6 +14,29 @@ $PSModuleAutoLoadingPreference = "ALL"
 Push-Location $mydir
 Import-Module .\Modules\posh-git
 
+function Test-ConnectionString
+{
+    param([string] $ConnectionString)
+
+    Add-Type -AssemblyName System.Data
+
+    $conn = New-Object System.Data.SqlClient.SqlConnection
+    
+    try 
+    {
+        $conn.ConnectionString = $ConnectionString
+        $conn.Open()
+        Write-Host "Connected to Database $($conn.Database)"
+        $conn.Close()
+    }
+    Catch [Exception]
+    {
+        Write-Host "Generic Exception"
+        Write-Host $_
+        $_ | Select *
+    }
+}
+
 function Get-OSSVersion
 {
     $currentDirectory = (Get-Location).Path
