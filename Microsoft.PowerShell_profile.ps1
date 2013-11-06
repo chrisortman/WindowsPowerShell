@@ -6,6 +6,7 @@ Set-Alias subl 'C:\Program Files\Sublime Text 2\sublime_text.exe'
 Set-Alias gh4w 'C:\Users\ChrisO\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\GitHub, Inc\GitHub.appref-ms'
 Set-Alias vi 'C:\Program Files (x86)\Vim\vim73\vim.exe'
 Set-Alias gvim 'C:\Program Files (x86)\Vim\vim73\gvim.exe'
+Set-Alias -Name tm86 'C:\Windows\syswow64\taskmgr.exe'
 
 $mydir = (Split-Path -parent $MyInvocation.MyCommand.Definition)
 
@@ -126,6 +127,12 @@ function Start-Storefront
 function prompt {
     $realLASTEXITCODE = $LASTEXITCODE
 
+    $historyid = 1
+    $historyItem = Get-History -Count 1
+    if($historyItem)
+    {
+        $historyid = $historyItem.Id + 1
+    }
     # Reset color, which can be messed up by Enable-GitColors
     $Host.UI.RawUI.ForegroundColor = $GitPromptSettings.DefaultForegroundColor
 
@@ -134,7 +141,9 @@ function prompt {
     Write-VcsStatus
 
     $global:LASTEXITCODE = $realLASTEXITCODE
-    return [System.Environment]::NewLine + "> "
+    Write-Host -nonewline "`n$historyid > "
+
+    "`b"
 }
 
 #Posh git stuff
@@ -147,3 +156,4 @@ Add-PSSnapin WDeploySnapin3.0
 
 Import-Module Pscx
 Invoke-BatchFile "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
+. (Join-Path $mydir 'Enable-HistoryPersistence.ps1')
