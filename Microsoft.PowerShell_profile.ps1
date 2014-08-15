@@ -1,6 +1,6 @@
 $psroot = (Split-Path $profile)
 
-Set-Alias msbuild C:\windows\microsoft.net\framework\v4.0.30319\MSBuild.exe
+Set-Alias msbuild 'C:\program files (x86)\MSBuild\12.0\bin\MSBuild.exe'
 Set-Alias vs 'C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe'
 Set-Alias subl 'C:\Program Files\Sublime Text 2\sublime_text.exe'
 Set-Alias gh4w 'C:\Users\ChrisO\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\GitHub, Inc\GitHub.appref-ms'
@@ -71,5 +71,5 @@ Pop-Location
 Add-PSSnapin WDeploySnapin3.0
 
 Import-Module Pscx
-Invoke-BatchFile "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\VsDevCmd.bat"
+Invoke-BatchFile "C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\VsDevCmd.bat"
 . (Join-Path $mydir 'Enable-HistoryPersistence.ps1')
